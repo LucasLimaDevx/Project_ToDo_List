@@ -1,4 +1,4 @@
-package com.lucasdevx.todo_list.repository.controller;
+package com.lucasdevx.todo_lis.controller;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdevx.todo_list.model.User;
-import com.lucasdevx.todo_list.repository.service.UserService;
+import com.lucasdevx.todo_list.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")

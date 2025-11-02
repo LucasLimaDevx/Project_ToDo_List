@@ -1,4 +1,4 @@
-package com.lucasdevx.todo_list.repository.service;
+package com.lucasdevx.todo_list.service;
 
 import java.util.List;
 
