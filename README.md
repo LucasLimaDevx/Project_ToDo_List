@@ -17,7 +17,7 @@ O sistema permite criar, atualizar, listar e excluir tarefas, além de organizá
 ## Configuração e execução
   1. Clone o repositório:
      
-          git clone git@github.com:LucasLimaDevx/MedicalAppointmentSystem.git
+          git@github.com:LucasLimaDevx/Project_ToDo_List.git
 
 
   3. No arquivo application.yml configure o banco de dados com usuário e senha
