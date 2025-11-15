@@ -53,25 +53,25 @@ O sistema permite criar, atualizar, listar e excluir tarefas, além de organizá
 
      
 # Rotas da API
-## Gerenciamento (/api/users)
+## Gerenciamento (/api/user)
 
-| Método | Rota                      | Descrição                                |
-|--------|---------------------------|------------------------------------------|
-| POST   | /api/users                | Cria um novo usuário                     |
-| GET    | /api/users                | Lista todos os usuários                  |
-| GET    | /api/users/{id}           | Busca um usuário pelo ID                 |
-| PUT    | /api/users/{id}           | Atualiza todos os dados de um usuário    |
-| DELETE | /api/users/{id}           | Remove um usuário                        |
+| Método | Rota                     | Descrição                                |
+|--------|--------------------------|------------------------------------------|
+| POST   | /api/user                | Cria um novo usuário                     |
+| GET    | /api/user                | Lista todos os usuários                  |
+| GET    | /api/user/{id}           | Busca um usuário pelo ID                 |
+| PUT    | /api/user/{id}           | Atualiza todos os dados de um usuário    |
+| DELETE | /api/user/{id}           | Remove um usuário                        |
 
 ## Gerenciamento (api/tasks)
 
-| Método | Rota                        | Descrição                                |
-|--------|-----------------------------|------------------------------------------|
-| POST   | /api/tasks                  | Cria uma nova tarefa                     |
-| GET    | /api/tasks                  | Lista todas as tarefas                   |
-| GET    | /api/tasks/{id}             | Busca uma tarefa pelo ID                 |
-| PUT    | /api/tasks/{id}             | Atualiza todos os dados de uma tarefa    |
-| DELETE | /api/tasks/{id}             | Remove uma tarefa                        |
+| Método | Rota                       | Descrição                                |
+|--------|----------------------------|------------------------------------------|
+| POST   | /api/task                  | Cria uma nova tarefa                     |
+| GET    | /api/task                  | Lista todas as tarefas                   |
+| GET    | /api/task/{id}             | Busca uma tarefa pelo ID                 |
+| PUT    | /api/task/{id}             | Atualiza todos os dados de uma tarefa    |
+| DELETE | /api/task/{id}             | Remove uma tarefa                        |
 
 ## Gerenciamento (api/category)
 
