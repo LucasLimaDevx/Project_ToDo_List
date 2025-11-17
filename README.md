@@ -9,6 +9,7 @@ O sistema permite criar, atualizar, listar e excluir tarefas, além de organizá
 - Spring Web
 - Spring Data JPA / Hibernet
 - MySQL
+- SQL
 - Maven
 - Flyway
 
