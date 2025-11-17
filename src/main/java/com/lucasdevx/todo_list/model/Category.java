@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,6 +39,7 @@ public class Category {
 	@Column(name = "color", nullable = false, length = 20)
 	private String color;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
 	private Set<Task> tasks = new HashSet<Task>();
 
