@@ -91,3 +91,6 @@ O sistema permite criar, atualizar, listar e excluir tarefas, além de organizá
 
 Aplicação estará disponível em http//:localhost:8080
 
+## Autor
+
+Lucas Lima Silva: https://www.linkedin.com/in/lucaslimaitz/
