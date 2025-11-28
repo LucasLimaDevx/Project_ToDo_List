@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdevx.todo_list.dto.CategoryDTO;
+import com.lucasdevx.todo_list.exception.ObjectIsNullException;
 import com.lucasdevx.todo_list.model.Category;
 import com.lucasdevx.todo_list.service.CategoryService;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 public class CategoryController {
 	
 	@Autowired
@@ -28,6 +29,9 @@ public class CategoryController {
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CategoryDTO insert(@RequestBody CategoryDTO categoryDTO) {
+		if(categoryDTO == null) {
+			throw new ObjectIsNullException();
+		}
 		
 		Category category = categoryService.parseToEntity(categoryDTO);
 		
@@ -36,6 +40,10 @@ public class CategoryController {
 	
 	@GetMapping("/{id}")
 	public CategoryDTO findById(@PathVariable Long id) {
+		if(id <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
+		
 		return categoryService.parseToDTO(categoryService.findById(id));
 	}
 	
@@ -50,14 +58,29 @@ public class CategoryController {
 		return categoriesDTO;
 	}
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public CategoryDTO update(@RequestBody CategoryDTO CategoryDTO) {
-		Category category = categoryService.parseToEntity(CategoryDTO);
+	public CategoryDTO update(@RequestBody CategoryDTO categoryDTO) {
+		if(categoryDTO == null) {
+			throw new ObjectIsNullException();
+		}
+		
+		if(categoryDTO.id() == null) {
+			throw new NullPointerException("Id is null");
+		}
+		
+		if(categoryDTO.id() <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
+		Category category = categoryService.parseToEntity(categoryDTO);
 		
 		return categoryService.parseToDTO(categoryService.update(category));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id){
+		if(id <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
+		
 		categoryService.delete(id);
 		
 		return ResponseEntity.noContent().build();

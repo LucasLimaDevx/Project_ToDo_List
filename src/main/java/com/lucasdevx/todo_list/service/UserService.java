@@ -41,7 +41,11 @@ public class UserService {
 	}
 	
 	public void delete(Long id) {
+		findById(id);
+		
 		repositoryUser.deleteById(id);
+		
+		
 	}
 	
 	public User parseToEntity(UserDTO userDTO) {
