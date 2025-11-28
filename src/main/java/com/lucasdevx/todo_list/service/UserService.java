@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdevx.todo_list.dto.UserDTO;
+import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.User;
 import com.lucasdevx.todo_list.repository.UserRepository;
 
@@ -22,14 +23,14 @@ public class UserService {
 	
 	public User findById(Long id) {
 		
-		return repositoryUser.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
+		return repositoryUser.findById(id).orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
 	}
 	
 	public List<User> findAll(){
 		return repositoryUser.findAll();
 	}
 	
-	public User update(User user) {
+	public User update(User user){
 		User currentUser = findById(user.getId());
 		
 		currentUser.setName(user.getName());

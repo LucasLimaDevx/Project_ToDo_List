@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdevx.todo_list.dto.UserDTO;
+import com.lucasdevx.todo_list.exception.ObjectIsNullException;
 import com.lucasdevx.todo_list.model.User;
 import com.lucasdevx.todo_list.service.UserService;
 
@@ -27,20 +28,26 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserDTO insert(@RequestBody UserDTO userDTO) {
-		
+	public UserDTO insert(@RequestBody UserDTO userDTO){
+		if(userDTO == null) {
+			throw new ObjectIsNullException();
+		}
 		User user = userService.parseToEntity(userDTO);
 		
 		return userService.parseToDTO(userService.insert(user));
 	}
 	
 	@GetMapping("/{id}")
-	public UserDTO findById(@PathVariable Long id) {
+	public UserDTO findById(@PathVariable Long id){
+		
+		if(id <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
 		return userService.parseToDTO(userService.findById(id));
 	}
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UserDTO> findAll(){
+	public List<UserDTO> findAll() {
 		
 		List<User> users = userService.findAll();
 		List<UserDTO> usersDTO = users.stream()
@@ -51,6 +58,17 @@ public class UserController {
 	}
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserDTO update(@RequestBody UserDTO userDTO) {
+		if(userDTO == null) {
+			throw new ObjectIsNullException();
+		}
+		if(userDTO.id() == null) {
+			throw new NullPointerException("Id is null");
+		}
+		if(userDTO.id() <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
+		
+		
 		User user = userService.parseToEntity(userDTO);
 		
 		return userService.parseToDTO(userService.update(user));
@@ -58,6 +76,9 @@ public class UserController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id){
+		if(id <= 0) {
+			throw new IllegalArgumentException("Invalid id");
+		}
 		userService.delete(id);
 		
 		return ResponseEntity.noContent().build();

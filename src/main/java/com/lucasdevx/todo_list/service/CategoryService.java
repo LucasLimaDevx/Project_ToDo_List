@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdevx.todo_list.dto.CategoryDTO;
+import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.Category;
 import com.lucasdevx.todo_list.repository.CategoryRepository;
 
@@ -22,7 +23,7 @@ public class CategoryService {
 	
 	public Category findById(Long id) {
 		
-		return repositoryCategory.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
+		return repositoryCategory.findById(id).orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
 	}
 	
 	public List<Category> findAll(){

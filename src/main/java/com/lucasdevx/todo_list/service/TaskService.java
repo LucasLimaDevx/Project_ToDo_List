@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdevx.todo_list.dto.TaskDTO;
+import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.Task;
 import com.lucasdevx.todo_list.repository.TaskRepository;
 
@@ -22,7 +23,7 @@ public class TaskService {
 	
 	public Task findById(Long id) {
 		
-		return repositoryTask.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id"));
+		return repositoryTask.findById(id).orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
 	}
 	
 	public List<Task> findAll(){
