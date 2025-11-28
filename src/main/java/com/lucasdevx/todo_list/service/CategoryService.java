@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdevx.todo_list.dto.CategoryDTO;
+import com.lucasdevx.todo_list.exception.DatabaseException;
 import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.Category;
 import com.lucasdevx.todo_list.repository.CategoryRepository;
@@ -42,8 +43,14 @@ public class CategoryService {
 	}
 	
 	public void delete(Long id) {
-		findById(id);
+		Category category =  findById(id);
+		
+		if(!category.getTasks().isEmpty()) {
+			throw new DatabaseException("Integrity database");
+		}
+		
 		repositoryCategory.deleteById(id);
+	
 	}
 	
 	public Category parseToEntity(CategoryDTO categoryDTO) {

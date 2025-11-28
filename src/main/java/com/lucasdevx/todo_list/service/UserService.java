@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdevx.todo_list.dto.UserDTO;
+import com.lucasdevx.todo_list.exception.DatabaseException;
 import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.User;
 import com.lucasdevx.todo_list.repository.UserRepository;
@@ -41,9 +42,15 @@ public class UserService {
 	}
 	
 	public void delete(Long id) {
-		findById(id);
-		
+		User user =  findById(id);
+	
+		if(!user.getTasks().isEmpty()) {
+			throw new DatabaseException("Integrity database");
+		}
 		repositoryUser.deleteById(id);
+		
+		
+		
 		
 		
 	}

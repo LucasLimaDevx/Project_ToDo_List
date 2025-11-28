@@ -46,7 +46,9 @@ public class TaskService {
 	
 	public void delete(Long id) {
 		findById(id);
+		
 		repositoryTask.deleteById(id);
+		
 	}
 	
 	public Task parseToEntity(TaskDTO taskDTO) {

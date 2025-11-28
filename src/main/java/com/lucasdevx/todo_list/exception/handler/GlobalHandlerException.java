@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import com.lucasdevx.todo_list.exception.DatabaseException;
 import com.lucasdevx.todo_list.exception.ObjectIsNullException;
 import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.exception.ResponseException;
@@ -49,6 +50,16 @@ public class GlobalHandlerException {
 	
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<ResponseException> handlerNullPointerException(NullPointerException exception, WebRequest request){
+		ResponseException response = new ResponseException(
+				LocalDateTime.now(), 
+				exception.getMessage(), 
+				request.getDescription(false));
+		
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<ResponseException> handlerDatabaseException(DatabaseException exception, WebRequest request){
 		ResponseException response = new ResponseException(
 				LocalDateTime.now(), 
 				exception.getMessage(), 
