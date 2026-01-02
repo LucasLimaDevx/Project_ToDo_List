@@ -1,11 +1,13 @@
 package com.lucasdevx.todo_list.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lucasdevx.todo_list.dto.CategoryDTO;
+import com.lucasdevx.todo_list.dto.request.CategoryRequestDTO;
+import com.lucasdevx.todo_list.dto.response.CategoryResponseDTO;
 import com.lucasdevx.todo_list.exception.DatabaseException;
 import com.lucasdevx.todo_list.exception.ObjectNotFoundException;
 import com.lucasdevx.todo_list.model.Category;
@@ -17,33 +19,41 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository repositoryCategory;
 	
-	public Category insert(Category category) {
+	public CategoryResponseDTO insert(CategoryRequestDTO categoryRequestDTO) {
+		Category category = parseToEntity(categoryRequestDTO);
 		
-		return repositoryCategory.save(category);
+		return parseToDTO(repositoryCategory.save(category));
 	}
 	
-	public Category findById(Long id) {
+	public CategoryResponseDTO findById(Long id) {
 		
-		return repositoryCategory.findById(id).orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
+		return parseToDTO(repositoryCategory.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Invalid id")));
 	}
 	
-	public List<Category> findAll(){
-		return repositoryCategory.findAll();
+	public List<CategoryResponseDTO> findAll(){
+		List<Category> categories = repositoryCategory.findAll();
+		List<CategoryResponseDTO> categoriesDTO = categories.stream()
+				.map(category -> parseToDTO(category))
+				.collect(Collectors.toList());
+		
+		return categoriesDTO;
 	}
 	
-	public Category update(Category category) {
-		Category currentCategory = findById(category.getId());
+	public CategoryResponseDTO update(CategoryRequestDTO categoryRequestDTO, Long id) {
+		Category currentCategory = repositoryCategory.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
 		
-		currentCategory.setName(category.getName());
-		currentCategory.setColor(category.getColor());
+		currentCategory.setName(categoryRequestDTO.name());
+		currentCategory.setColor(categoryRequestDTO.color());
 		
-		
-		return repositoryCategory.save(currentCategory);
+		return parseToDTO(currentCategory);
 			
 	}
 	
 	public void delete(Long id) {
-		Category category =  findById(id);
+		Category category = repositoryCategory.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Invalid id"));
 		
 		if(!category.getTasks().isEmpty()) {
 			throw new DatabaseException("Integrity database");
@@ -53,24 +63,20 @@ public class CategoryService {
 	
 	}
 	
-	public Category parseToEntity(CategoryDTO categoryDTO) {
+	public Category parseToEntity(CategoryRequestDTO categoryResponseDTO) {
 		Category Category = new Category();
-		
-		Category.setId(categoryDTO.id());
-		Category.setName(categoryDTO.name());
-		Category.setColor(categoryDTO.color());
-	
-		
+
+		Category.setName(categoryResponseDTO.name());
+		Category.setColor(categoryResponseDTO.color());
 		return Category;
 	}
 	
-	public CategoryDTO parseToDTO(Category category) {
+	public static CategoryResponseDTO parseToDTO(Category category) {
 		
 		
-		return new CategoryDTO(
+		return new CategoryResponseDTO(
 				category.getId(),
 				category.getName(),
-				category.getColor(),
-				category.getTasks());
+				category.getColor());
 	}
 }

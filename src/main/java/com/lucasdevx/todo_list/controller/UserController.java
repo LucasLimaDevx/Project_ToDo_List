@@ -1,7 +1,6 @@
 package com.lucasdevx.todo_list.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasdevx.todo_list.dto.UserDTO;
+import com.lucasdevx.todo_list.dto.request.UserRequestDTO;
+import com.lucasdevx.todo_list.dto.response.UserResponseDTO;
 import com.lucasdevx.todo_list.exception.ObjectIsNullException;
-import com.lucasdevx.todo_list.model.User;
 import com.lucasdevx.todo_list.service.UserService;
 
 @RestController
@@ -28,50 +27,41 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserDTO insert(@RequestBody UserDTO userDTO){
-		if(userDTO == null) {
+	public UserResponseDTO insert(@RequestBody UserRequestDTO userRequestDTO){
+		if(userRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
-		User user = userService.parseToEntity(userDTO);
-		
-		return userService.parseToDTO(userService.insert(user));
+		return userService.insert(userRequestDTO);
 	}
 	
 	@GetMapping("/{id}")
-	public UserDTO findById(@PathVariable Long id){
+	public UserResponseDTO findById(@PathVariable Long id){
 		
 		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
-		return userService.parseToDTO(userService.findById(id));
+		return userService.findById(id);
 	}
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UserDTO> findAll() {
+	public List<UserResponseDTO> findAll() {		
 		
-		List<User> users = userService.findAll();
-		List<UserDTO> usersDTO = users.stream()
-				.map(user -> userService.parseToDTO(user))
-				.collect(Collectors.toList());
 		
-		return usersDTO;
+		return userService.findAll();
 	}
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserDTO update(@RequestBody UserDTO userDTO) {
-		if(userDTO == null) {
+	
+	@PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public UserResponseDTO update(@RequestBody UserRequestDTO userRequestDTO, @PathVariable Long id) {
+		if(userRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
-		if(userDTO.id() == null) {
-			throw new NullPointerException("Id is null");
-		}
-		if(userDTO.id() <= 0) {
+
+		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
+	
 		
-		
-		User user = userService.parseToEntity(userDTO);
-		
-		return userService.parseToDTO(userService.update(user));
+		return userService.update(userRequestDTO, id);
 	}
 	
 	@DeleteMapping("/{id}")

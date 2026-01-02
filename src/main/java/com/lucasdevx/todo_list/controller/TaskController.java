@@ -1,7 +1,6 @@
 package com.lucasdevx.todo_list.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasdevx.todo_list.dto.TaskDTO;
+import com.lucasdevx.todo_list.dto.request.TaskRequestDTO;
+import com.lucasdevx.todo_list.dto.response.TaskResponseDTO;
 import com.lucasdevx.todo_list.exception.ObjectIsNullException;
-import com.lucasdevx.todo_list.model.Task;
 import com.lucasdevx.todo_list.service.TaskService;
 
 @RestController
@@ -28,50 +27,43 @@ public class TaskController {
 	private TaskService taskService;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TaskDTO insert(@RequestBody TaskDTO taskDTO) {
-		if(taskDTO == null) {
+	public TaskResponseDTO insert(@RequestBody TaskRequestDTO taskRequestDTO) {
+		if(taskRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
-		Task task = taskService.parseToEntity(taskDTO);
 		
-		return taskService.parseToDTO(taskService.insert(task));
+		return taskService.insert(taskRequestDTO);
 	}
 	
-	@GetMapping("/{id}")
-	public TaskDTO findById(@PathVariable Long id) {
+	@GetMapping(value ="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public TaskResponseDTO findById(@PathVariable Long id) {
 		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
-		return taskService.parseToDTO(taskService.findById(id));
+		return taskService.findById(id);
 	}
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<TaskDTO> findAll(){
+	public List<TaskResponseDTO> findAll(){
 		
-		List<Task> tasks = taskService.findAll();
-		List<TaskDTO> taskDTO = tasks.stream()
-				.map(task -> taskService.parseToDTO(task))
-				.collect(Collectors.toList());
-		
-		return taskDTO;
+		return taskService.findAll();
 	}
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TaskDTO update(@RequestBody TaskDTO taskDTO) {
-		if(taskDTO == null) {
+	@PutMapping(value = "/{id}" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public TaskResponseDTO update(@RequestBody TaskRequestDTO taskRequestDTO, @PathVariable Long id) {
+		if(taskRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
 		
-		if(taskDTO.id() == null) {
+		if(id == null) {
 			throw new NullPointerException("Id is null");
 		}
 		
-		if(taskDTO.id() <= 0) {
+		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
+	
 		
-		Task task = taskService.parseToEntity(taskDTO);
-		
-		return taskService.parseToDTO(taskService.update(task));
+		return taskService.update(taskRequestDTO, id);
 	}
 	
 	@DeleteMapping("/{id}")

@@ -1,7 +1,6 @@
 package com.lucasdevx.todo_list.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasdevx.todo_list.dto.CategoryDTO;
+import com.lucasdevx.todo_list.dto.request.CategoryRequestDTO;
+import com.lucasdevx.todo_list.dto.response.CategoryResponseDTO;
 import com.lucasdevx.todo_list.exception.ObjectIsNullException;
-import com.lucasdevx.todo_list.model.Category;
 import com.lucasdevx.todo_list.service.CategoryService;
 
 @RestController
@@ -28,51 +27,45 @@ public class CategoryController {
 	private CategoryService categoryService;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public CategoryDTO insert(@RequestBody CategoryDTO categoryDTO) {
-		if(categoryDTO == null) {
+	public CategoryResponseDTO insert(@RequestBody CategoryRequestDTO categoryRequestDTO) {
+		if(categoryRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
 		
-		Category category = categoryService.parseToEntity(categoryDTO);
 		
-		return categoryService.parseToDTO(categoryService.insert(category));
+		return categoryService.insert(categoryRequestDTO);
 	}
 	
 	@GetMapping("/{id}")
-	public CategoryDTO findById(@PathVariable Long id) {
+	public CategoryResponseDTO findById(@PathVariable Long id) {
 		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
 		
-		return categoryService.parseToDTO(categoryService.findById(id));
+		return categoryService.findById(id);
 	}
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CategoryDTO> findAll(){
-		
-		List<Category> categories = categoryService.findAll();
-		List<CategoryDTO> categoriesDTO = categories.stream()
-				.map(category -> categoryService.parseToDTO(category))
-				.collect(Collectors.toList());
-		
-		return categoriesDTO;
+	public List<CategoryResponseDTO> findAll(){
+		return categoryService.findAll();
 	}
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public CategoryDTO update(@RequestBody CategoryDTO categoryDTO) {
-		if(categoryDTO == null) {
+	
+	@PutMapping(value = "/{id}" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public CategoryResponseDTO update(@RequestBody CategoryRequestDTO categoryRequestDTO,@PathVariable Long id) {
+		if(categoryRequestDTO == null) {
 			throw new ObjectIsNullException();
 		}
 		
-		if(categoryDTO.id() == null) {
+		if(id == null) {
 			throw new NullPointerException("Id is null");
 		}
 		
-		if(categoryDTO.id() <= 0) {
+		if(id <= 0) {
 			throw new IllegalArgumentException("Invalid id");
 		}
-		Category category = categoryService.parseToEntity(categoryDTO);
+
 		
-		return categoryService.parseToDTO(categoryService.update(category));
+		return categoryService.update(categoryRequestDTO, id);
 	}
 	
 	@DeleteMapping("/{id}")
